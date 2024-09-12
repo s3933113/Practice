@@ -28,13 +28,13 @@ public class TravelPackage {
 
     public void addLessonFee(String level, int lessons) {
         switch (level.toLowerCase()) {
-            case "expert":
+            case "Lift Pass Only":
                 lessonFee = lessons * 15;
                 break;
-            case "intermediate":
+            case "Lift Pass and Basic Lesson":
                 lessonFee = lessons * 20;
                 break;
-            case "beginner":
+            case "Lift Pass and Full Lesson":
                 lessonFee = lessons * 25;
                 break;
         }
@@ -46,5 +46,6 @@ public class TravelPackage {
                "\nAccommodation: " + (accommodation != null ? accommodation.toString() : "None") +
                "\nLift Pass: $" + liftPass + ", Lesson Fee: $" + lessonFee;
     }
+    
 }
      

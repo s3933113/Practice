@@ -8,6 +8,7 @@ public class Customer {
         this.name = name;
         this.skiingLevel = skiingLevel;
     }
+    
 
     public String getId() {
         return id;
@@ -20,6 +21,8 @@ public class Customer {
     public String getSkiingLevel() {
         return skiingLevel;
     }
+
+    
 
     @Override
     public String toString() {
