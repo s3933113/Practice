@@ -16,7 +16,7 @@ public class Main {
         System.out.println("\nEnter anything to continue...");
         scanner.next();
     }
-    
+
     public static void printHeading(String title) {
         printSeparator(60);
         System.out.println(title);
@@ -25,18 +25,11 @@ public class Main {
 
     public static void main(String[] args) {
         MtBullerResort resort = new MtBullerResort();
-
-        // Adding initial accommodations
-        resort.addAccommodation(new Accommodation("A1", "Single Room", 120));
-        resort.addAccommodation(new Accommodation("A2", "Double Room", 150));
-        resort.addAccommodation(new Accommodation("A2", "Queen Room", 180));
-        resort.addAccommodation(new Accommodation("A2", "King Room", 210));
-        // Add more accommodations as needed
-
+        
         // Adding initial customers
-        resort.addCustomer(new Customer("C1", "Alice", "beginner"));
-        resort.addCustomer(new Customer("C2", "Bob", "intermediate"));
-        resort.addCustomer(new Customer("C3", "Charlie", "expert"));
+        resort.addCustomer(new Customer("C1", "Alice", "555-1234", "beginner", "101"));
+        resort.addCustomer(new Customer("C2", "Bob", "555-5678", "intermediate", "202"));
+        resort.addCustomer(new Customer("C3", "Charlie", "555-9876", "expert", "303"));
 
         // Interaction with the user
         boolean running = true;
@@ -44,65 +37,96 @@ public class Main {
             clearConsole();
             printHeading("Mountain Buller Resort");
             System.out.println("1. Display all accommodations");
-            System.out.println("2. Add customer");
-            System.out.println("3. List customers");
-            System.out.println("4. Create package");
-            System.out.println("5. List packages");
-            System.out.println("6. Quit");
+            System.out.println("2. Available Accommodations and Rooms");
+            System.out.println("3. Add customer");
+            System.out.println("4. List customers");
+            System.out.println("5. Create package");
+            System.out.println("6. List packages");
+            System.out.println("7. Quit");
 
             int choice = scanner.nextInt();
+            scanner.nextLine();  
             switch (choice) {
                 case 1:
-                clearConsole();
-                printSeparator(60);
-                    resort.displayAccommodations();
-                    printSeparator(60);
-                    anythingToContinue();
-                    break;
-                case 2:
-                clearConsole();
-                printHeading("Add Customer");
-                System.out.println("Enter customer ID:");
-                String id = scanner.next();
-                System.out.println("Enter customer name:");
-                String name = scanner.next();
-                System.out.println("Enter skiing level (beginner, intermediate, expert):");
-                String level = scanner.next();
-                
-                resort.addCustomer(new Customer(id, name, level));
-                    break;
-                    
-                case 3:
                     clearConsole();
-                    resort.listCustomers(); // This should correctly call the method
+                    printSeparator(60);
+                    resort.showRooms();
                     printSeparator(60);
                     anythingToContinue();
                     break;
 
+                case 2:
+                    clearConsole();
+                    printHeading("Available Accommodations and Rooms");
+                    resort.displayRooms(); // Show available rooms for each accommodation
+                    anythingToContinue();
+                    break;
+
+                case 3:
+                    clearConsole();
+                    printHeading("Add Customer");
+                
+                    // Collect customer details
+                    System.out.println("Enter customer ID:");
+                    String id = scanner.next();
+                    System.out.println("Enter customer name:");
+                    String name = scanner.next();
+                    System.out.println("Enter skiing level (beginner, intermediate, expert):");
+                    String level = scanner.next();
+                    System.out.println("Enter phone number:");
+                    String phoneNumber = scanner.next();
+                    System.out.println("Enter room number to assign (e.g., 101):");
+                    String roomNumber = scanner.next();
+                    String formattedRoomNumber = "Room " + roomNumber;  // Adjust the input to match the room list format
+                    
+                    // Check if the room is available and assign it to the customer
+                    if (resort.assignRoom(formattedRoomNumber)) {
+                        // If the room was successfully assigned, create the customer
+                        Customer newCustomer = new Customer(id, name, phoneNumber, level, formattedRoomNumber);
+                        resort.addCustomer(newCustomer);
+                        System.out.println("Customer added with room number: " + formattedRoomNumber);
+                    } else {
+                        // If the room assignment failed, don't add the customer
+                        System.out.println("Failed to assign the room. Either the room is already assigned or not available.");
+                    }
+                    
+                
+                
+            
+
+
                 case 4:
+                    clearConsole();
+                    resort.listCustomers();
+                    printSeparator(60);
+                    anythingToContinue();
+                    break;
+
+                case 5:
                     System.out.println("Enter customer ID:");
                     String customerId = scanner.next();
                     System.out.println("Enter start date (YYYY-MM-DD):");
                     String startDate = scanner.next();
                     System.out.println("Enter duration (days):");
                     int duration = scanner.nextInt();
-                    resort.createPackage(customerId, startDate, duration);
+
+                    
                     break;
 
-                case 5:
+                case 6:
                     clearConsole();
-                    resort.listPackages();  // Ensure this is called
+                    resort.listPackages();
                     anythingToContinue();
                     break;
-                
-                case 6:
+
+                case 7:
                     running = false;
                     break;
+
                 default:
                     System.out.println("Invalid choice, please try again.");
-                    
+                    break;
             }
-            
         }
 
         scanner.close();
