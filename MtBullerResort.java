@@ -22,10 +22,15 @@ public class MtBullerResort {
             System.out.println("Room " + formattedRoomNumber + " is already assigned or not available.");
         }
     }
+    
 
     public void listCustomers() {
-        for (Customer customer : customers) {
-            System.out.println(customer);
+        if (customers.isEmpty()) {
+            System.out.println("No customers have been added.");
+        } else {
+            for (Customer customer : customers) {
+                System.out.println(customer);
+            }
         }
     }
     
@@ -81,10 +86,12 @@ public class MtBullerResort {
             System.out.println("Assigned " + roomNumber + " to the customer.");
             return true;  // Room successfully assigned
         } else {
-            System.out.println("Room " + roomNumber + " is already assigned or not available.");
+            System.out.println("Room " + roomNumber + " is already assigned or does not exist.");
             return false;  // Room assignment failed
         }
     }
+    
+    
     
 
     public void displayAssignedRooms() {

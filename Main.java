@@ -62,34 +62,41 @@ public class Main {
                     anythingToContinue();
                     break;
 
-                case 3:
+                    case 3:
                     clearConsole();
                     printHeading("Add Customer");
                 
                     // Collect customer details
                     System.out.println("Enter customer ID:");
-                    String id = scanner.next();
+                    String id = scanner.next();  // Read customer ID
+                
                     System.out.println("Enter customer name:");
-                    String name = scanner.next();
+                    String name = scanner.next();  // Read customer name
+                
                     System.out.println("Enter skiing level (beginner, intermediate, expert):");
-                    String level = scanner.next();
+                    String level = scanner.next();  // Read skiing level
+                
                     System.out.println("Enter phone number:");
-                    String phoneNumber = scanner.next();
+                    String phoneNumber = scanner.next();  // Read phone number
+                
+                    // Handle room number input and format
                     System.out.println("Enter room number to assign (e.g., 101):");
-                    String roomNumber = scanner.next();
-                    String formattedRoomNumber = "Room " + roomNumber;  // Adjust the input to match the room list format
-                    
+                    String roomNumber = scanner.next();  // Read room number as input
+                    String formattedRoomNumber = "Room " + roomNumber;  // Add "Room " prefix
+                
                     // Check if the room is available and assign it to the customer
                     if (resort.assignRoom(formattedRoomNumber)) {
                         // If the room was successfully assigned, create the customer
                         Customer newCustomer = new Customer(id, name, phoneNumber, level, formattedRoomNumber);
-                        resort.addCustomer(newCustomer);
+                        resort.addCustomer(newCustomer);  // Add the customer to the list
                         System.out.println("Customer added with room number: " + formattedRoomNumber);
                     } else {
-                        // If the room assignment failed, don't add the customer
-                        System.out.println("Failed to assign the room. Either the room is already assigned or not available.");
+                        // If room assignment failed
+                        System.out.println("Failed to assign the room. The room may already be assigned or not available.");
                     }
-                    
+                
+                    anythingToContinue();  // Pause to allow the user to read the output
+                    break;  // Ensure to add a break statement after case 3
                 
                 
             
