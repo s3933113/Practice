@@ -1,51 +1,56 @@
 public class TravelPackage {
-    private String customerId;
-    private String startDate;
-    private int duration;
-    private Accommodation accommodation;
-    private double liftPass;
-    private double lessonFee;
+    private String customerId;  // Customer who owns the package
+    private String startDate;   // Start date of the package
+    private int duration;       // Duration in days
+    private int liftPass;       // Duration of lift pass in days
+    private String accommodation;  // Assigned accommodation (room number)
+    private double liftPassCost;   // Cost for the lift pass
+    private double lessonFee;      // Cost for the skiing lesson
 
-    public TravelPackage(String customerId, String startDate, int duration) {
+    // Constructor to initialize the package
+    public TravelPackage(String customerId, String startDate, int duration, String accommodation) {
         this.customerId = customerId;
         this.startDate = startDate;
         this.duration = duration;
-        this.liftPass = 0;
-        this.lessonFee = 0;
-    }
-
-    public void addAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
+        this.liftPassCost = 0;  // Default cost is 0
+        this.lessonFee = 0;     // Default cost is 0
     }
 
+    // Method to add a lift pass
     public void addLiftPass(int days) {
-        if (days >= 5) {
-            liftPass = days * 26 * 0.9; // 10% discount for 5 days or more
-        } else {
-            liftPass = days * 26;
-        }
+        this.liftPass = days;  // Assign lift pass days
+        this.liftPassCost = days * 50;  // Example cost calculation: $50 per day
     }
 
+    // Method to add lessons to the package
     public void addLessonFee(String level, int lessons) {
         switch (level.toLowerCase()) {
-            case "Lift Pass Only":
-                lessonFee = lessons * 15;
+            case "beginner":
+                lessonFee = lessons * 30;  // $30 per lesson for beginner
                 break;
-            case "Lift Pass and Basic Lesson":
-                lessonFee = lessons * 20;
+            case "intermediate":
+                lessonFee = lessons * 50;  // $50 per lesson for intermediate
                 break;
-            case "Lift Pass and Full Lesson":
-                lessonFee = lessons * 25;
+            case "expert":
+                lessonFee = lessons * 70;  // $70 per lesson for expert
                 break;
         }
+    }
+
+    // Method to calculate the total cost
+    public double calculateTotalCost() {
+        return liftPassCost + lessonFee;  // Total cost is the sum of lift pass and lesson fee
     }
 
     @Override
     public String toString() {
-        return "Customer ID: " + customerId + ", Start Date: " + startDate + ", Duration: " + duration +
-               "\nAccommodation: " + (accommodation != null ? accommodation.toString() : "None") +
-               "\nLift Pass: $" + liftPass + ", Lesson Fee: $" + lessonFee;
+        return "Travel Package for Customer ID: " + customerId +
+               "\nStart Date: " + startDate +
+               "\nDuration: " + duration + " days" +
+               "\nAccommodation: " + accommodation +
+               "\nLift Pass: " + liftPass + " days, Cost: $" + liftPassCost +
+               "\nLesson Fee: $" + lessonFee +
+               "\nTotal Cost: $" + calculateTotalCost();
     }
-    
 }
-     

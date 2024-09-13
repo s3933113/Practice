@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MtBullerResort {
     private ArrayList<Customer> customers = new ArrayList<>();
     private ArrayList<TravelPackage> packages = new ArrayList<>();
     private static ArrayList<String> rooms;
     private ArrayList<String> assignedRooms;
+    private Scanner scanner;
 
     public void addCustomer(Customer customer) {
         String roomNumber = customer.getRoomNumber();
@@ -109,7 +111,38 @@ public class MtBullerResort {
         }
     }
 
-      
+    public TravelPackage createPackage(String customerId, String startDate, int duration) {
+        Customer customer = findCustomerById(customerId);
+        if (customer != null) {
+            // Create a new TravelPackage object
+            TravelPackage travelPackage = new TravelPackage(customerId, startDate, duration, customer.getRoomNumber());
+    
+            // Add the package to the list of packages
+            packages.add(travelPackage);
+    
+            return travelPackage;  // Return the package so we can add lift pass later
+        } else {
+            System.out.println("Customer with ID " + customerId + " not found.");
+            return null;  // Return null if no customer found
+        }
+    }
+    
+    
+    
+    
+    public Customer findCustomerById(String customerId) {
+        for (Customer customer : customers) {
+            if (customer.getId().equalsIgnoreCase(customerId)) {  // Use equalsIgnoreCase for case-insensitive match
+                return customer;
+            }
+        }
+        return null;  // Return null if no match is found
+    }
+    
+    
+    
+    
+  
 
     public void listPackages() {
         if (packages.isEmpty()) {

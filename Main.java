@@ -110,16 +110,50 @@ public class Main {
                     break;
                 
 
-                case 5:
-                    System.out.println("Enter customer ID:");
-                    String customerId = scanner.next();
-                    System.out.println("Enter start date (YYYY-MM-DD):");
-                    String startDate = scanner.next();
-                    System.out.println("Enter duration (days):");
-                    int duration = scanner.nextInt();
-
-                    
+                    case 5:
+                    clearConsole();
+                    // Prompt for Customer ID
+                    System.out.print("Enter Customer ID for the package: ");
+                    String customerId = scanner.nextLine();
+                
+                    // Search for the customer
+                    Customer foundCustomer = resort.findCustomerById(customerId);
+                
+                    // Check if the customer exists
+                    if (foundCustomer != null) {
+                        // Customer found
+                        System.out.println("Customer found: " + foundCustomer.getName());
+                
+                        // Ask for start date and duration
+                        System.out.print("Enter start date (YYYY-MM-DD): ");
+                        String startDate = scanner.nextLine();
+                
+                        System.out.print("Enter duration (days): ");
+                        int duration = scanner.nextInt();
+                        scanner.nextLine();  // Clear the newline
+                
+                        // Ask for lift pass details
+                        System.out.print("Enter the number of days for the lift pass: ");
+                        int liftPassDays = scanner.nextInt();
+                        scanner.nextLine();  // Clear the newline
+                
+                        // Create the package
+                        TravelPackage newPackage = resort.createPackage(customerId, startDate, duration);
+                
+                        // Add the lift pass to the package
+                        newPackage.addLiftPass(liftPassDays);
+                
+                        System.out.println("Package created with a lift pass for " + liftPassDays + " days.");
+                        System.out.println("Done...!");
+                        anythingToContinue();
+                    } else {
+                        clearConsole();
+                        // Customer not found, display an error message
+                        System.out.println("Error: Customer with ID " + customerId + " not found. Please try again.");
+                        anythingToContinue();
+                    }
                     break;
+                
 
                 case 6:
                     clearConsole();
