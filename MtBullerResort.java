@@ -12,27 +12,31 @@ public class MtBullerResort {
         // Ensure the room number is formatted correctly
         String formattedRoomNumber = "Room " + roomNumber.replace("Room ", "");
         
-        if (rooms.contains(formattedRoomNumber)) {  // Check if the formatted room is available
-            rooms.remove(formattedRoomNumber);  // Remove the room from available rooms
-            assignedRooms.add(formattedRoomNumber);  // Add room to assigned rooms
-            customers.add(customer);  // Add the customer to the list
-            System.out.println("Customer added: " + customer); 
-            System.out.println(formattedRoomNumber + " is now unavailable.");
-        } else {
-            System.out.println("Room " + formattedRoomNumber + " is already assigned or not available.");
-        }
+        // Remove the room from available rooms and add to assigned rooms (assuming it's available)
+        rooms.remove(formattedRoomNumber);  // Attempt to remove the room from available rooms
+        assignedRooms.add(formattedRoomNumber);  // Add the room to the assigned rooms list
+        
+        // Add the customer to the customers list
+        customers.add(customer);  
+        
+        // Print confirmation messages
+        System.out.println("Customer added: " + customer); 
+        System.out.println(formattedRoomNumber + " is now unavailable.");
     }
+    
     
 
     public void listCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers have been added.");
         } else {
+            
             for (Customer customer : customers) {
-                System.out.println(customer);
+                System.out.println(customer);  // This will call the toString() method of the Customer class
             }
         }
     }
+    
     
     public MtBullerResort() {
         rooms = new ArrayList<>();

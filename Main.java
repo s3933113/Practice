@@ -25,12 +25,14 @@ public class Main {
 
     public static void main(String[] args) {
         MtBullerResort resort = new MtBullerResort();
+        Scanner scanner = new Scanner(System.in);
         
         // Adding initial customers
         resort.addCustomer(new Customer("C1", "Alice", "555-1234", "beginner", "101"));
         resort.addCustomer(new Customer("C2", "Bob", "555-5678", "intermediate", "202"));
         resort.addCustomer(new Customer("C3", "Charlie", "555-9876", "expert", "303"));
 
+        
         // Interaction with the user
         boolean running = true;
         while (running) {
@@ -83,31 +85,30 @@ public class Main {
                     System.out.println("Enter room number to assign (e.g., 101):");
                     String roomNumber = scanner.next();  // Read room number as input
                     String formattedRoomNumber = "Room " + roomNumber;  // Add "Room " prefix
-                
+                    clearConsole();
+                    
                     // Check if the room is available and assign it to the customer
                     if (resort.assignRoom(formattedRoomNumber)) {
                         // If the room was successfully assigned, create the customer
-                        Customer newCustomer = new Customer(id, name, phoneNumber, level, formattedRoomNumber);
-                        resort.addCustomer(newCustomer);  // Add the customer to the list
-                        System.out.println("Customer added with room number: " + formattedRoomNumber);
+                        resort.addCustomer(new Customer(id, name, phoneNumber, level, roomNumber));
+                        
+                        System.out.println("Customer added with room number: " + roomNumber);
                     } else {
                         // If room assignment failed
                         System.out.println("Failed to assign the room. The room may already be assigned or not available.");
                     }
                 
                     anythingToContinue();  // Pause to allow the user to read the output
-                    break;  // Ensure to add a break statement after case 3
-                
-                
-            
-
-
-                case 4:
-                    clearConsole();
-                    resort.listCustomers();
-                    printSeparator(60);
-                    anythingToContinue();
                     break;
+
+                    case 4:
+                    clearConsole();
+                    printHeading("Customer List");
+                    resort.listCustomers();  // Call the listCustomers method to display the customers
+                    printSeparator(60);
+                    anythingToContinue();  // Pause to allow the user to read the output
+                    break;
+                
 
                 case 5:
                     System.out.println("Enter customer ID:");
