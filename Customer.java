@@ -8,12 +8,11 @@ public class Customer {
     public Customer(String id, String name, String phoneNumber, String skiingLevel, String roomNumber) {
         this.id = id;
         this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.skiingLevel = skiingLevel;
+        setPhoneNumber(phoneNumber);  // Validate phone number
+        setSkiingLevel(skiingLevel);  // Validate skiing level
         this.roomNumber = roomNumber; // Initialize room number
     }
 
-    
     // Getters and Setters
     public String getId() {
         return id;
@@ -43,12 +42,30 @@ public class Customer {
         this.name = name;
     }
 
+    // Validate phone number with exception handling
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        try {
+            if (phoneNumber.matches("\\d{10}")) {  // Example: 10-digit number validation
+                this.phoneNumber = phoneNumber;
+            } else {
+                throw new IllegalArgumentException("Invalid phone number format. Must be 10 digits.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());  // Catch and print the error
+        }
     }
 
+    // Validate skiing level with exception handling
     public void setSkiingLevel(String skiingLevel) {
-        this.skiingLevel = skiingLevel;
+        try {
+            if (skiingLevel.equalsIgnoreCase("beginner") || skiingLevel.equalsIgnoreCase("intermediate") || skiingLevel.equalsIgnoreCase("expert")) {
+                this.skiingLevel = skiingLevel;
+            } else {
+                throw new IllegalArgumentException("Invalid skiing level. Must be 'beginner', 'intermediate', or 'expert'.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());  // Catch and print the error
+        }
     }
 
     public void setRoomNumber(String roomNumber) {
@@ -57,7 +74,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer ID: " + id + ", Name: " + name + 
+        return "Customer ID: " + id + ", Name: " + name +
                ", Phone Number: " + phoneNumber + ", Skiing Level: " + skiingLevel +
                ", Room Number: " + roomNumber;
     }
