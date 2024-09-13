@@ -173,6 +173,17 @@ public class MtBullerResort {
         return null;
     }
 
+    public void addLessonFeesToPackage(String customerId, String skiingLevel, int numberOfLessons) {
+        TravelPackage foundPackage = findPackageByCustomerId(customerId);
+        if (foundPackage != null) {
+            foundPackage.addLessonFee(skiingLevel, numberOfLessons);
+            System.out.println("Lesson fees added for customer ID: " + customerId);
+        } else {
+            System.out.println("Package not found for customer ID: " + customerId);
+        }
+    }
+    
+
     // List all packages
     public void listPackages() {
         if (packages.isEmpty()) {

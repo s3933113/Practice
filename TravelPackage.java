@@ -25,18 +25,22 @@ public class TravelPackage implements Serializable {
     }
 
     // Method to add lessons to the package
-    public void addLessonFee(String level, int lessons) {
-        switch (level.toLowerCase()) {
+    public void addLessonFee(String skiingLevel, int numberOfLessons) {
+        switch (skiingLevel.toLowerCase()) {
             case "beginner":
-                lessonFee = lessons * 30;  // $30 per lesson for beginner
+                lessonFee += numberOfLessons * 30;  // $30 per lesson for beginner
                 break;
             case "intermediate":
-                lessonFee = lessons * 50;  // $50 per lesson for intermediate
+                lessonFee += numberOfLessons * 50;  // $50 per lesson for intermediate
                 break;
             case "expert":
-                lessonFee = lessons * 70;  // $70 per lesson for expert
+                lessonFee += numberOfLessons * 70;  // $70 per lesson for expert
                 break;
+            default:
+                System.out.println("Invalid skiing level.");
+                return;
         }
+        System.out.println("Added " + numberOfLessons + " lessons for " + skiingLevel + " level.");
     }
 
     // Method to calculate the total cost
@@ -48,7 +52,7 @@ public class TravelPackage implements Serializable {
     public String toString() {
         return "Customer ID: " + customerId + ", Start Date: " + startDate +
                ", Duration: " + duration + " days, Accommodation: " + accommodation +
-               ", Lift Pass: " + liftPass + " days";
+               ", Lift Pass: " + liftPass + " days, Lesson Fee: $" + lessonFee;
     }
 
     public String getCustomerId() {

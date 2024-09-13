@@ -46,9 +46,10 @@ public class Main {
             System.out.println("5. Create package");
             System.out.println("6. Add Lift Pass to Package");
             System.out.println("7. List packages");
-            System.out.println("8. Save packages to file");
-            System.out.println("9. Read packages from file");
-            System.out.println("10. Quit");
+            System.out.println("8. Add lesson fees to package");
+            System.out.println("9. Save packages to file");
+            System.out.println("10. Read packages from file");
+            System.out.println("11. Quit");
 
             int choice = scanner.nextInt();
             scanner.nextLine();  
@@ -147,36 +148,36 @@ public class Main {
                     }
                     break;
                     case 6:
-    clearConsole();
-    printHeading("Add Lift Pass to Package");
+                        clearConsole();
+                        printHeading("Add Lift Pass to Package");
 
-    // Reuse the existing customerId variable (do not declare it again)
-    System.out.print("Enter Customer ID for the package: ");
-    customerId = scanner.nextLine();  // Reassign value to existing variable
+                            // Reuse the existing customerId variable (do not declare it again)
+                            System.out.print("Enter Customer ID for the package: ");
+                            customerId = scanner.nextLine();  // Reassign value to existing variable
 
-    // Search for the package
-    TravelPackage foundPackage = resort.findPackageByCustomerId(customerId);
+                            // Search for the package
+                            TravelPackage foundPackage = resort.findPackageByCustomerId(customerId);
 
-    // Check if the package exists
-    if (foundPackage != null) {
-        // Package found
-        System.out.println("Package found for Customer ID: " + customerId);
+                            // Check if the package exists
+                            if (foundPackage != null) {
+                            // Package found
+                            System.out.println("Package found for Customer ID: " + customerId);
 
-        // Ask for lift pass details
-        System.out.print("Enter the number of days for the lift pass: ");
-        int liftPassDays = scanner.nextInt();
-        scanner.nextLine();  // Clear the newline
+                            // Ask for lift pass details
+                            System.out.print("Enter the number of days for the lift pass: ");
+                            int liftPassDays = scanner.nextInt();
+                            scanner.nextLine();  // Clear the newline
 
-        // Add the lift pass to the found package
-        foundPackage.addLiftPass(liftPassDays);
-        System.out.println("Lift pass for " + liftPassDays + " days has been added to the package.");
-    } else {
-        // Package not found
-        System.out.println("No package found for Customer ID: " + customerId);
-    }
+                            // Add the lift pass to the found package
+                            foundPackage.addLiftPass(liftPassDays);
+                            System.out.println("Lift pass for " + liftPassDays + " days has been added to the package.");
+                        } else {
+                            // Package not found
+                            System.out.println("No package found for Customer ID: " + customerId);
+                        }
 
-    anythingToContinue();
-    break;
+                        anythingToContinue();
+                        break;
 
                 
                 
@@ -185,21 +186,55 @@ public class Main {
                     resort.listPackages();
                     anythingToContinue();
                     break;
+                    
+                 case 8:
+                    clearConsole();
+                    printHeading("Add Lesson Fees to Package");
+                
+                    // Ask for Customer ID to find the package
+                    System.out.print("Enter Customer ID for the package: ");
+                    String lessonCustomerId = scanner.nextLine();
+                
+                    // Search for the package
+                    TravelPackage lessonPackage = resort.findPackageByCustomerId(lessonCustomerId);
+                
+                    // Check if the package exists
+                    if (lessonPackage != null) {
+                        System.out.println("Package found for Customer ID: " + lessonCustomerId);
+                        
+                        // Ask for skiing level
+                        System.out.print("Enter skiing level (beginner, intermediate, expert): ");
+                        String skiingLevel = scanner.nextLine();
+                
+                        // Ask for number of lessons
+                        System.out.print("Enter the number of lessons: ");
+                        int numberOfLessons = scanner.nextInt();
+                        scanner.nextLine();  // Clear the newline
+                
+                        // Add lesson fees to the package
+                        resort.addLessonFeesToPackage(lessonCustomerId, skiingLevel, numberOfLessons);
+                    } else {
+                        System.out.println("No package found for Customer ID: " + lessonCustomerId);
+                    }
+                
+                    anythingToContinue();
+                    break;
+                
 
-                case 8:
+                case 9:
                     clearConsole();
                     System.out.println("Saving all packages to file...");
                     resort.savePackagesToFile("packages.dat");  // Specify the filename
                     anythingToContinue();
                     break;
-                case 9:
+                case 10:
                     clearConsole();
                     System.out.println("Reading packages from file...");
                     resort.readPackagesFromFile("packages.dat");  // Specify the filename
                     anythingToContinue();
                     break;
 
-                case 10:
+                case 11:
                     running = false;
                     break;
 
