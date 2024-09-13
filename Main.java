@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
+    private static TravelPackage newPackage;
 
     public static void clearConsole() {
         for (int i = 0; i < 100; i++) System.out.println();
@@ -43,8 +44,11 @@ public class Main {
             System.out.println("3. Add customer");
             System.out.println("4. List customers");
             System.out.println("5. Create package");
-            System.out.println("6. List packages");
-            System.out.println("7. Quit");
+            System.out.println("6. Add Lift Pass to Package");
+            System.out.println("7. List packages");
+            System.out.println("8. Save packages to file");
+            System.out.println("9. Read packages from file");
+            System.out.println("10. Quit");
 
             int choice = scanner.nextInt();
             scanner.nextLine();  
@@ -131,19 +135,8 @@ public class Main {
                         System.out.print("Enter duration (days): ");
                         int duration = scanner.nextInt();
                         scanner.nextLine();  // Clear the newline
-                
-                        // Ask for lift pass details
-                        System.out.print("Enter the number of days for the lift pass: ");
-                        int liftPassDays = scanner.nextInt();
-                        scanner.nextLine();  // Clear the newline
-                
                         // Create the package
                         TravelPackage newPackage = resort.createPackage(customerId, startDate, duration);
-                
-                        // Add the lift pass to the package
-                        newPackage.addLiftPass(liftPassDays);
-                
-                        System.out.println("Package created with a lift pass for " + liftPassDays + " days.");
                         System.out.println("Done...!");
                         anythingToContinue();
                     } else {
@@ -153,15 +146,60 @@ public class Main {
                         anythingToContinue();
                     }
                     break;
-                
+                    case 6:
+    clearConsole();
+    printHeading("Add Lift Pass to Package");
 
-                case 6:
+    // Reuse the existing customerId variable (do not declare it again)
+    System.out.print("Enter Customer ID for the package: ");
+    customerId = scanner.nextLine();  // Reassign value to existing variable
+
+    // Search for the package
+    TravelPackage foundPackage = resort.findPackageByCustomerId(customerId);
+
+    // Check if the package exists
+    if (foundPackage != null) {
+        // Package found
+        System.out.println("Package found for Customer ID: " + customerId);
+
+        // Ask for lift pass details
+        System.out.print("Enter the number of days for the lift pass: ");
+        int liftPassDays = scanner.nextInt();
+        scanner.nextLine();  // Clear the newline
+
+        // Add the lift pass to the found package
+        foundPackage.addLiftPass(liftPassDays);
+        System.out.println("Lift pass for " + liftPassDays + " days has been added to the package.");
+    } else {
+        // Package not found
+        System.out.println("No package found for Customer ID: " + customerId);
+    }
+
+    anythingToContinue();
+    break;
+
+                
+                
+                case 7:
                     clearConsole();
                     resort.listPackages();
                     anythingToContinue();
                     break;
 
-                case 7:
+                case 8:
+                    clearConsole();
+                    System.out.println("Saving all packages to file...");
+                    resort.savePackagesToFile("packages.dat");  // Specify the filename
+                    anythingToContinue();
+                    break;
+                case 9:
+                    clearConsole();
+                    System.out.println("Reading packages from file...");
+                    resort.readPackagesFromFile("packages.dat");  // Specify the filename
+                    anythingToContinue();
+                    break;
+
+                case 10:
                     running = false;
                     break;
 

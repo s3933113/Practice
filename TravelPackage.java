@@ -1,4 +1,6 @@
-public class TravelPackage {
+import java.io.Serializable;
+
+public class TravelPackage implements Serializable {
     private String customerId;  // Customer who owns the package
     private String startDate;   // Start date of the package
     private int duration;       // Duration in days
@@ -19,8 +21,7 @@ public class TravelPackage {
 
     // Method to add a lift pass
     public void addLiftPass(int days) {
-        this.liftPass = days;  // Assign lift pass days
-        this.liftPassCost = days * 50;  // Example cost calculation: $50 per day
+        this.liftPass += days;  // Add the lift pass days
     }
 
     // Method to add lessons to the package
@@ -45,12 +46,12 @@ public class TravelPackage {
 
     @Override
     public String toString() {
-        return "Travel Package for Customer ID: " + customerId +
-               "\nStart Date: " + startDate +
-               "\nDuration: " + duration + " days" +
-               "\nAccommodation: " + accommodation +
-               "\nLift Pass: " + liftPass + " days, Cost: $" + liftPassCost +
-               "\nLesson Fee: $" + lessonFee +
-               "\nTotal Cost: $" + calculateTotalCost();
+        return "Customer ID: " + customerId + ", Start Date: " + startDate +
+               ", Duration: " + duration + " days, Accommodation: " + accommodation +
+               ", Lift Pass: " + liftPass + " days";
+    }
+
+    public String getCustomerId() {
+        return customerId;  // Return the customerId
     }
 }
