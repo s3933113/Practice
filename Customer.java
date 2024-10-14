@@ -61,7 +61,7 @@ public class Customer {
             if (skiingLevel.equalsIgnoreCase("beginner") || skiingLevel.equalsIgnoreCase("intermediate") || skiingLevel.equalsIgnoreCase("expert")) {
                 this.skiingLevel = skiingLevel;
             } else {
-                throw new IllegalArgumentException("Invalid skiing level. Must be 'beginner', 'intermediate', or 'expert'.");
+                throw new IllegalArgumentException("This customer doesn't add lesson yet.");
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());  // Catch and print the error
@@ -74,8 +74,8 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer ID: " + id + ", Name: " + name +
-               ", Phone Number: " + phoneNumber + ", Skiing Level: " + skiingLevel +
-               ", Room Number: " + roomNumber;
+        return "ID : " + id + ", Name : " + name +"\n"+
+               "Phone Number : " + phoneNumber + "\n"+
+               "Room Number : " + roomNumber;
     }
 }

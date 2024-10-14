@@ -40,8 +40,10 @@ public class TravelPackage implements Serializable {
                 System.out.println("Invalid skiing level.");
                 return;
         }
+        
         System.out.println("Added " + numberOfLessons + " lessons for " + skiingLevel + " level.");
     }
+    
 
     // Method to calculate the total cost
     public double calculateTotalCost() {
