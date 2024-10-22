@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class MtBullerResort {
     private ArrayList<Customer> customers = new ArrayList<>();
@@ -78,43 +79,39 @@ public class MtBullerResort {
     }
 
     // List all customers
-    public void listCustomers() {
-        printHeading("Customer List");
+    public String listCustomers() {
+        StringBuilder customerList = new StringBuilder();
         if (customers.isEmpty()) {
-            System.out.println("No customers have been added.");
+            customerList.append("No customers have been added.");
         } else {
             for (Customer customer : customers) {
-                System.out.println(customer);
+                customerList.append(customer.toString()).append("\n");
             }
-            printSeparator(60);
         }
+        return customerList.toString();
     }
+    
 
     // Show available rooms
-    public void showRooms() {
-        clearConsole();
-        printHeading("              \"All Accommodations\"");
-        printSeparator(60);
-        System.out.println("Single Rooms: Room 101 Room 102 Room 103 Room 104 Room 105 Type: Single Room Price: 120");
-        System.out.println("Double Rooms: Room 201 Room 202 Room 203 Room 204 Room 205 Type: double Room Price: 150");
-        System.out.println("Queen Rooms: Room 301 Room 302 Room 303 Room 304 Room 305 Type: Queen Room Price: 180");
-        System.out.println("King Rooms: Room 401 Room 402 Room 403 Room 404 Room 405 Type: King Room Price: 210");
-        printSeparator(60);
-        anythingToContinue();
+    public static String showRooms() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Single Rooms: Room 101 Room 102 Room 103 Room 104 Room 105 Type: Single Room Price: 120\n");
+        sb.append("Double Rooms: Room 201 Room 202 Room 203 Room 204 Room 205 Type: Double Room Price: 150\n");
+        sb.append("Queen Rooms: Room 301 Room 302 Room 303 Room 304 Room 305 Type: Queen Room Price: 180\n");
+        sb.append("King Rooms: Room 401 Room 402 Room 403 Room 404 Room 405 Type: King Room Price: 210\n");
+        return sb.toString();  // Return the string
     }
-
     // Display available rooms
-    public void displayRooms() {
-        clearConsole();
-        printHeading("Available Accommodations and Rooms");
-        if (rooms.isEmpty()) {  
-            System.out.println("No available rooms.");
+    public String displayRooms() {
+        if (rooms.isEmpty()) {
+            return "No available rooms.";
         } else {
-            System.out.println("Available Rooms:");
+            StringBuilder sb = new StringBuilder();
+            sb.append("Available Rooms:\n");
             for (String room : rooms) {
-                System.out.println(room);
+                sb.append(room).append("\n");
             }
-            anythingToContinue();
+            return sb.toString();  // Return the string
         }
     }
 
@@ -218,150 +215,49 @@ public class MtBullerResort {
     }
 
     public void addCustomerProcess() {
-        System.out.println("Add Customer");
+        // Collect customer details through dialog boxes
+        String id = JOptionPane.showInputDialog(null, "Enter Customer ID:");
+        String name = JOptionPane.showInputDialog(null, "Enter Customer Name:");
+        String phone = JOptionPane.showInputDialog(null, "Enter Phone Number:");
+        String roomNumber = JOptionPane.showInputDialog(null, "Enter Room Number:");
 
-        String id = "", name = "", phoneNumber = "", roomNumber = "";
-        boolean validInput = false;
+        // Assuming default skiing level for simplicity
+        String skiingLevel = "beginner";
 
-        clearConsole();
-
-        // Collect customer details
-        System.out.println("Enter customer ID:");
-        id = MtBullerResort.scanner.next();  // Read customer ID
-
-        System.out.println("Enter customer name:");
-        name = MtBullerResort.scanner.next();  // Read customer name
-
-        // Validate phone number input
-        validInput = false;
-        while (!validInput) {
-            try {
-                System.out.println("Enter phone number (10 digits):");
-                phoneNumber = MtBullerResort.scanner.next();
-                if (!phoneNumber.matches("\\d{10}")) {
-                    throw new IllegalArgumentException("Invalid phone number format. Please enter exactly 10 digits.");
-                }
-                validInput = true;
-            } catch (IllegalArgumentException e) {
-                MtBullerResort.clearConsole();
-                System.out.println(e.getMessage());
-            }
-        }
-
-        // Validate room number input
-        validInput = false;
-        while (!validInput) {
-            try {
-                System.out.println("Enter room number to assign (e.g., 101):");
-                roomNumber = MtBullerResort.scanner.next();  // Read room number as input
-                String formattedRoomNumber = "Room " + roomNumber;  // Add "Room " prefix
-
-                // Check if the room is available
-                if (!assignRoom(formattedRoomNumber)) {
-                    throw new IllegalArgumentException("Room " + roomNumber + " is not available or does not exist.");
-                }
-
-                validInput = true;
-                System.out.println("Room " + roomNumber + " has been assigned.");
-            } catch (IllegalArgumentException e) {
-                MtBullerResort.clearConsole();
-                System.out.println(e.getMessage());
-            }
-        }
-
-        // Add customer after validations
-        clearConsole();
-        addCustomer(new Customer(id, name, phoneNumber, "beginner", roomNumber));  // Assuming beginner as skiing level
-        System.out.println("Customer added with room number: " + roomNumber);
-        MtBullerResort.anythingToContinue();
+        // Add customer to the system
+        addCustomer(new Customer(id, name, phone, skiingLevel, roomNumber));
+        
+        JOptionPane.showMessageDialog(null, "Customer added successfully!");
     }
+
+
 
     public void createPackageProcess() {
-        clearConsole();
-        String customerId = "";
-    
-        // Initial prompt for customer ID
-        System.out.print("Enter Customer ID for the package: ");
-        customerId = scanner.nextLine().trim();  // Use trim() to remove leading/trailing spaces
-    
-        // Ensure that the Customer ID is not empty
-        while (customerId.isEmpty()) {
-        
-            customerId = scanner.nextLine().trim();
-        }
-    
-        // Search for the customer
-        Customer foundCustomer = findCustomerById(customerId);
-    
-        // Check if the customer exists
-        if (foundCustomer != null) {
-            // Customer found
-            System.out.println("Customer found: " + foundCustomer.getName());
-    
-            // Ask for start date and duration
-            boolean validDate = false;
-            String startDate = "";
-    
-            while (!validDate) {
-                try {
-                    System.out.print("Enter start date (YYYY-MM-DD): ");
-                    startDate = scanner.nextLine();
-    
-                    // Validate using regex for the format YYYY-MM-DD
-                    if (!startDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                        throw new IllegalArgumentException("Invalid date format. Please enter the date in the format YYYY-MM-DD.");
-                    }
-    
-                    validDate = true;
-                } catch (IllegalArgumentException e) {
-                    clearConsole();
-                    System.out.println(e.getMessage());
-                }
-            }
-    
-            // Validate duration
-            int duration = 0;
-            boolean validDuration = false;
-    
-            while (!validDuration) {
-                try {
-                    System.out.print("Enter duration (days): ");
-                    duration = Integer.parseInt(scanner.nextLine());
-    
-                    // Check if the duration is within the valid range (1 to 30)
-                    if (duration > 0 && duration <= 30) {
-                        validDuration = true;
-                    } else {
-                        throw new IllegalArgumentException("Duration must be between 1 and 30 days.");
-                    }
-                } catch (NumberFormatException e) {
-                    clearConsole();
-                    System.out.println("Invalid input. Please enter a number.");
-                } catch (IllegalArgumentException e) {
-                    clearConsole();
-                    System.out.println(e.getMessage());
-                }
-            }
-    
-            // Create the package
+        String customerId = JOptionPane.showInputDialog(null, "Enter Customer ID for the package:");
+        String startDate = JOptionPane.showInputDialog(null, "Enter start date (YYYY-MM-DD):");
+        String durationStr = JOptionPane.showInputDialog(null, "Enter duration (days):");
+
+        try {
+            int duration = Integer.parseInt(durationStr);
             TravelPackage newPackage = createPackage(customerId, startDate, duration);
-            System.out.println("Package created successfully!");
-        } else {
-            // Customer not found
-            System.out.println("Error: Customer with ID " + customerId + " not found.");
+            if (newPackage != null) {
+                JOptionPane.showMessageDialog(null, "Package created successfully!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Customer not found!");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid duration. Please enter a number.");
         }
     }
     
     
-    
+    // Option 6
     public void addLiftPassToPackageProcess() {
         clearConsole();
         printHeading("Add Lift Pass to Package");
     
         // Consume any leftover newline character
-        if (scanner.hasNextLine()) {
-            scanner.nextLine();
-        }
+
     
         // Ask for the customer ID
         System.out.print("Enter Customer ID for the package: ");
@@ -404,8 +300,12 @@ public class MtBullerResort {
             // Add the lift pass to the package
             foundPackage.addLiftPass(liftPassDays);
             System.out.println("Lift pass for " + liftPassDays + " days has been added to the package.");
+            anythingToContinue();
+
         } else {
+
             System.out.println("No package found for Customer ID: " + customerId);
+            
         }
     }
     
@@ -488,7 +388,7 @@ public class MtBullerResort {
         }
     }
     
-    
+
 
     
 
@@ -502,5 +402,12 @@ public class MtBullerResort {
                 System.out.println(pkg);  // Call the toString() method of TravelPackage
             }
         }
+    }
+
+    
+
+    public Object getAvailableRooms() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAvailableRooms'");
     }
 }

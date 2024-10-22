@@ -13,7 +13,7 @@ public class MtBullerAdmin {
         resort.addCustomer(new Customer("C1", "Alice", "0435551234", "beginner", "101"));
         resort.addCustomer(new Customer("C2", "Bob", "0425555678", "intermediate", "202"));
         resort.addCustomer(new Customer("C3", "Charlie", "0465559876", "expert", "303"));
-
+        
         // Interaction with the user
         boolean running = true;
         while (running) {
