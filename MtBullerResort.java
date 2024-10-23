@@ -1,11 +1,18 @@
+import java.awt.GridLayout;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class MtBullerResort {
     private ArrayList<Customer> customers = new ArrayList<>();
@@ -13,6 +20,8 @@ public class MtBullerResort {
     private static ArrayList<String> rooms;
     private ArrayList<String> assignedRooms;
     public static Scanner scanner = new Scanner(System.in);
+    
+    
 
 
     // Constructor
@@ -42,26 +51,21 @@ public class MtBullerResort {
     }
 
 
-    // Save packages to file
+    // Method to save packages to a file
     public void savePackagesToFile(String filename) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
-            out.writeObject(packages);  // Serialize the list of packages
+            out.writeObject(packages); // Serialize the list of packages
             System.out.println("Packages have been saved to " + filename);
         } catch (IOException e) {
             System.out.println("Error saving packages: " + e.getMessage());
         }
     }
 
-    // Read packages from file
+    // Method to read packages from a file
     public void readPackagesFromFile(String filename) {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
-            packages = (ArrayList<TravelPackage>) in.readObject();  // Deserialize the list of packages
+            packages = (ArrayList<TravelPackage>) in.readObject(); // Deserialize the list of packages
             System.out.println("Packages have been loaded from " + filename);
-
-            // Display the packages after reading them
-            for (TravelPackage pkg : packages) {
-                System.out.println(pkg);
-            }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error reading packages: " + e.getMessage());
         }
@@ -93,14 +97,59 @@ public class MtBullerResort {
     
 
     // Show available rooms
+    private static String[][] accommodations = {
+        {"101", "Single Room", "120"},
+        {"102", "Single Room", "120"},
+        {"103", "Single Room", "120"},
+        {"104", "Single Room", "120"},
+        {"105", "Single Room", "120"},
+        {"201", "Double Room", "150"},
+        {"202", "Double Room", "150"},
+        {"203", "Double Room", "150"},
+        {"204", "Double Room", "150"},
+        {"205", "Double Room", "150"},
+        {"301", "Queen Room ", "180"},
+        {"302", "Queen Room ", "180"},
+        {"303", "Queen Room ", "180"},
+        {"304", "Queen Room ", "180"},
+        {"305", "Queen Room ", "180"},
+        {"401", "King Room  ", "210"},
+        {"402", "King Room  ", "210"},
+        {"403", "King Room  ", "210"},
+        {"404", "King Room  ", "210"},
+        {"405", "King Room  ", "210"}
+    };
+
+    // Method to show rooms
     public static String showRooms() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Single Rooms: Room 101 Room 102 Room 103 Room 104 Room 105 Type: Single Room Price: 120\n");
-        sb.append("Double Rooms: Room 201 Room 202 Room 203 Room 204 Room 205 Type: Double Room Price: 150\n");
-        sb.append("Queen Rooms: Room 301 Room 302 Room 303 Room 304 Room 305 Type: Queen Room Price: 180\n");
-        sb.append("King Rooms: Room 401 Room 402 Room 403 Room 404 Room 405 Type: King Room Price: 210\n");
-        return sb.toString();  // Return the string
+        sb.append("List of Accommodations:\n\n");
+
+        // Loop through the accommodations array and format the details
+        for (String[] room : accommodations) {
+            sb.append("Room ").append(room[0])  // Room number
+              .append(" | Type: ").append(room[1])  // Room type
+              .append(" | Price: $").append(room[2])  // Room price
+              .append("\n");
+        }
+
+        return sb.toString();  // Return the formatted room details
     }
+
+    public static void main(String[] args) {
+        // Test the showRooms() method
+        System.out.println(showRooms());
+
+    }
+
+    public List<String> getAvailableRoomsAsList() {
+    if (rooms.isEmpty()) {
+        return new ArrayList<>();  // Return an empty list if no rooms are available
+    } else {
+        return new ArrayList<>(rooms);  // Return the available rooms as a list
+    }
+}
+    
     // Display available rooms
     public String displayRooms() {
         if (rooms.isEmpty()) {
@@ -139,19 +188,21 @@ public class MtBullerResort {
             }
         }
     }
+    
 
     // Create a package for a customer
-    public TravelPackage createPackage(String customerId, String startDate, int duration) {
+    public TravelPackage createPackage(String customerId, String startDate, int duration, String skiingLevel) {
         Customer customer = findCustomerById(customerId);
         if (customer != null) {
-            TravelPackage travelPackage = new TravelPackage(customerId, startDate, duration, customer.getRoomNumber());
+            // Create the package with skiingLevel and add it to the packages list
+            TravelPackage travelPackage = new TravelPackage(customerId, startDate, duration, customer.getRoomNumber(), skiingLevel);
             packages.add(travelPackage);
             return travelPackage;
         } else {
-            System.out.println("Customer with ID " + customerId + " not found.");
-            return null;
+            return null;  // Return null if the customer is not found
         }
     }
+    
 
     // Add lift pass to package
     public void addLiftPassToPackage(String customerId, int liftPassDays) {
@@ -184,15 +235,8 @@ public class MtBullerResort {
         return null;
     }
 
-    public void addLessonFeesToPackage(String customerId, String skiingLevel, int numberOfLessons) {
-        TravelPackage foundPackage = findPackageByCustomerId(customerId);
-        if (foundPackage != null) {
-            foundPackage.addLessonFee(skiingLevel, numberOfLessons);
-            System.out.println("Lesson fees added for customer ID: " + customerId);
-        } else {
-            System.out.println("Package not found for customer ID: " + customerId);
-        }
-    }
+    
+    
 
     public static void clearConsole() {
         for (int i = 0; i < 100; i++) System.out.println();
@@ -215,40 +259,130 @@ public class MtBullerResort {
     }
 
     public void addCustomerProcess() {
-        // Collect customer details through dialog boxes
-        String id = JOptionPane.showInputDialog(null, "Enter Customer ID:");
-        String name = JOptionPane.showInputDialog(null, "Enter Customer Name:");
-        String phone = JOptionPane.showInputDialog(null, "Enter Phone Number:");
-        String roomNumber = JOptionPane.showInputDialog(null, "Enter Room Number:");
-
-        // Assuming default skiing level for simplicity
-        String skiingLevel = "beginner";
-
-        // Add customer to the system
-        addCustomer(new Customer(id, name, phone, skiingLevel, roomNumber));
-        
-        JOptionPane.showMessageDialog(null, "Customer added successfully!");
-    }
-
-
-
-    public void createPackageProcess() {
-        String customerId = JOptionPane.showInputDialog(null, "Enter Customer ID for the package:");
-        String startDate = JOptionPane.showInputDialog(null, "Enter start date (YYYY-MM-DD):");
-        String durationStr = JOptionPane.showInputDialog(null, "Enter duration (days):");
-
-        try {
-            int duration = Integer.parseInt(durationStr);
-            TravelPackage newPackage = createPackage(customerId, startDate, duration);
-            if (newPackage != null) {
-                JOptionPane.showMessageDialog(null, "Package created successfully!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Customer not found!");
+        // Create text fields for customer details
+        JTextField idField = new JTextField();
+        JTextField nameField = new JTextField();
+        JTextField phoneField = new JTextField();
+    
+        // Fetch available rooms and create a JComboBox for room selection
+        List<String> availableRooms = getAvailableRoomsAsList();
+        JComboBox<String> roomComboBox = new JComboBox<>(availableRooms.toArray(new String[0]));
+    
+        // Create a panel to hold the input fields and the JComboBox
+        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+        panel.add(new JLabel("Customer ID:"));
+        panel.add(idField);
+        panel.add(new JLabel("Customer Name:"));
+        panel.add(nameField);
+        panel.add(new JLabel("Phone Number:"));
+        panel.add(phoneField);
+        panel.add(new JLabel("Room Number:"));
+        panel.add(roomComboBox); // Add the JComboBox for room selection
+    
+        // Show a dialog with the form to collect input
+        int result = JOptionPane.showConfirmDialog(null, panel, "Add New Customer", JOptionPane.OK_CANCEL_OPTION);
+    
+        if (result == JOptionPane.OK_OPTION) {
+            String id = idField.getText().trim();
+            String name = nameField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String roomNumber = (String) roomComboBox.getSelectedItem();
+    
+            // Validation to ensure no fields are left empty
+            if (id.isEmpty() || name.isEmpty() || phone.isEmpty() || roomNumber == null) {
+                JOptionPane.showMessageDialog(null, "Please fill out all fields before adding a customer.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                return; // Do not proceed if validation fails
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Invalid duration. Please enter a number.");
+    
+            // Validation for phone number: must be 10 digits
+            if (!phone.matches("\\d{10}")) {  // Regex to check if the phone contains exactly 10 digits
+                JOptionPane.showMessageDialog(null, "Phone number must be exactly 10 digits.", "Invalid Phone Number", JOptionPane.ERROR_MESSAGE);
+                return; // Do not proceed if validation fails
+            }
+    
+            // Assuming default skiing level for simplicity
+            String skiingLevel = "beginner";
+    
+            // Add customer to the system
+            addCustomer(new Customer(id, name, phone, skiingLevel, roomNumber));
+    
+            // Show success message
+            JOptionPane.showMessageDialog(null, "Customer added successfully!");
         }
     }
+    
+    public void createPackageProcess() {
+        if (customers.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No customers available. Please add customers first.");
+            return;
+        }
+    
+        JComboBox<String> customerIdComboBox = new JComboBox<>();
+        for (Customer customer : customers) {
+            customerIdComboBox.addItem(customer.getId());
+        }
+    
+        JComboBox<String> yearComboBox = new JComboBox<>(new String[]{"2024", "2025", "2026", "2027", "2028", "2029", "2030"});
+        JComboBox<String> monthComboBox = new JComboBox<>(new String[]{"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"});
+        JComboBox<String> dayComboBox = new JComboBox<>(new String[]{"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"});
+    
+        JComboBox<String> skiingLevelComboBox = new JComboBox<>(new String[]{"beginner", "intermediate", "expert"});
+    
+        JTextField durationField = new JTextField();
+        JTextField liftPassField = new JTextField();
+    
+        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 10));
+        panel.add(new JLabel("Select Customer ID:"));
+        panel.add(customerIdComboBox);
+        panel.add(new JLabel("Select Start Date (YYYY-MM-DD):"));
+        panel.add(new JPanel(new GridLayout(1, 3)) {{
+            add(yearComboBox);
+            add(monthComboBox);
+            add(dayComboBox);
+        }});
+        panel.add(new JLabel("Enter Duration (days):"));
+        panel.add(durationField);
+        panel.add(new JLabel("Add Lift Pass (days):"));
+        panel.add(liftPassField);
+        panel.add(new JLabel("Select Skiing Level:"));
+        panel.add(skiingLevelComboBox);
+    
+        int result = JOptionPane.showConfirmDialog(null, panel, "Create Package", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String selectedCustomerId = (String) customerIdComboBox.getSelectedItem();
+            String startYear = (String) yearComboBox.getSelectedItem();
+            String startMonth = (String) monthComboBox.getSelectedItem();
+            String startDay = (String) dayComboBox.getSelectedItem();
+            String startDate = startYear + "-" + startMonth + "-" + startDay;
+            String durationStr = durationField.getText().trim();
+            String liftPassStr = liftPassField.getText().trim();
+            String skiingLevel = (String) skiingLevelComboBox.getSelectedItem();
+    
+            if (durationStr.isEmpty() || liftPassStr.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please fill out all fields before creating a package.");
+                return;
+            }
+    
+            try {
+                int duration = Integer.parseInt(durationStr);
+                int liftPassDays = Integer.parseInt(liftPassStr);
+    
+                TravelPackage newPackage = createPackage(selectedCustomerId, startDate, duration, skiingLevel);
+    
+                if (newPackage != null) {
+                    newPackage.addLiftPass(liftPassDays);
+                    JOptionPane.showMessageDialog(null, "Package created successfully with lift pass and skiing level!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error: Customer not found or package creation failed.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please enter valid numbers for duration and lift pass.");
+            }
+        }
+    }
+    
+    
+    
     
     
     // Option 6
@@ -377,7 +511,7 @@ public class MtBullerResort {
                 }
     
                 // Add the lesson fees to the package
-                lessonPackage.addLessonFee(skiingLevel, numberOfLessons);
+                
                 System.out.println("Lesson fees added to the package.");
             } else {
                 System.out.println("No package found for Customer ID: " + lessonCustomerId);
@@ -388,21 +522,23 @@ public class MtBullerResort {
         }
     }
     
+    //list all packages
+    public String listPackages() {
+        if (packages.isEmpty()) {
+            return "No travel packages available.";
+        }
+
+        StringBuilder packageList = new StringBuilder();
+        packageList.append("List of Travel Packages:\n");
+        for (TravelPackage pkg : packages) {
+            packageList.append(pkg.toString()).append("\n");  // Make sure toString() works for TravelPackage
+        }
+        return packageList.toString();
+    }
 
 
     
-
-    // List all packages
-    public void listPackages() {
-        MtBullerResort.clearConsole();
-        if (packages.isEmpty()) {
-            System.out.println("No packages found.");
-        } else {
-            for (TravelPackage pkg : packages) {
-                System.out.println(pkg);  // Call the toString() method of TravelPackage
-            }
-        }
-    }
+    
 
     
 

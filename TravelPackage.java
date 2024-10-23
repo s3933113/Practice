@@ -1,63 +1,50 @@
 import java.io.Serializable;
 
 public class TravelPackage implements Serializable {
-    private String customerId;  // Customer who owns the package
-    private String startDate;   // Start date of the package
-    private int duration;       // Duration in days
-    private int liftPass;       // Duration of lift pass in days
-    private String accommodation;  // Assigned accommodation (room number)
-    private double liftPassCost;   // Cost for the lift pass
-    private double lessonFee;      // Cost for the skiing lesson
+    private String customerId;
+    private String startDate;
+    private int duration;
+    private String accommodation;
+    private String skiingLevel;  // New field for skiing level
+    private int liftPass;        // Number of lift pass days
 
-    // Constructor to initialize the package
-    public TravelPackage(String customerId, String startDate, int duration, String accommodation) {
+    // Constructor
+    public TravelPackage(String customerId, String startDate, int duration, String accommodation, String skiingLevel) {
         this.customerId = customerId;
         this.startDate = startDate;
         this.duration = duration;
         this.accommodation = accommodation;
-        this.liftPassCost = 0;  // Default cost is 0
-        this.lessonFee = 0;     // Default cost is 0
+        this.skiingLevel = skiingLevel;  // Initialize skiing level
+        this.liftPass = 0;               // Default lift pass is 0
     }
 
-    // Method to add a lift pass
+    // Method to add lift pass
     public void addLiftPass(int days) {
-        this.liftPass += days;  // Add the lift pass days
+        this.liftPass += days;
     }
 
-    // Method to add lessons to the package
-    public void addLessonFee(String skiingLevel, int numberOfLessons) {
-        switch (skiingLevel.toLowerCase()) {
-            case "beginner":
-                lessonFee += numberOfLessons * 30;  // $30 per lesson for beginner
-                break;
-            case "intermediate":
-                lessonFee += numberOfLessons * 50;  // $50 per lesson for intermediate
-                break;
-            case "expert":
-                lessonFee += numberOfLessons * 70;  // $70 per lesson for expert
-                break;
-            default:
-                System.out.println("Invalid skiing level.");
-                return;
-        }
-        
-        System.out.println("Added " + numberOfLessons + " lessons for " + skiingLevel + " level.");
-    }
-    
-
-    // Method to calculate the total cost
+    // Method to calculate total cost
     public double calculateTotalCost() {
-        return liftPassCost + lessonFee;  // Total cost is the sum of lift pass and lesson fee
+        // Assume lift pass costs $50 per day (adjust as needed)
+        double liftPassCost = liftPass * 50;
+        return liftPassCost;  // Only return the lift pass cost
     }
 
+    // Overriding toString() to display the package details
     @Override
     public String toString() {
-        return "Customer ID: " + customerId + ", Start Date: " + startDate +
-               ", Duration: " + duration + " days, Accommodation: " + accommodation +
-               ", Lift Pass: " + liftPass + " days, Lesson Fee: $" + lessonFee;
+        return "------------------------------" + "\n" +
+               "Customer ID: " + customerId + "\n" +
+               "Start Date: " + startDate + "\n" +
+               "Duration: " + duration + " days\n" +
+               "Room Number: " + accommodation + "\n" + 
+               "Lift Pass: " + liftPass + " days\n" +
+               "Skiing Level: " + skiingLevel + "\n" +
+               "------------------------------";
     }
 
+    // Getter for customerId
     public String getCustomerId() {
-        return customerId;  // Return the customerId
+        return customerId;
     }
 }
