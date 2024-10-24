@@ -41,7 +41,18 @@ public class MtBullerAdminGUI extends JFrame {
         add(tabbedPane, BorderLayout.CENTER);
 
         // Set an initial image on the roomImageLabel as soon as the program starts
-        roomImageLabel.setIcon(new ImageIcon("Source\\Welcome.jpg")); // Set the initial image here
+        roomImageLabel.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                // Resize the image when the label is resized
+                roomImageLabel.setIcon(resizeImageIcon("Source\\page.jpg", roomImageLabel.getWidth(), roomImageLabel.getHeight()));
+            }
+        });
+    }
+    private ImageIcon resizeImageIcon(String imagePath, int width, int height) {
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image img = icon.getImage();
+        Image resizedImage = img.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
     }
 
     // Create the "Accommodations" tab panel
@@ -76,12 +87,12 @@ public class MtBullerAdminGUI extends JFrame {
         // Button listeners
         showRoomsButton.addActionListener(e -> {
             roomDetailsArea.setText(resort.showRooms());
-            roomImageLabel.setIcon(new ImageIcon("Source\\Buller2.jpg"));  // Show all rooms image
+            roomImageLabel.setIcon(resizeImageIcon("Source\\page2.jpg", roomImageLabel.getWidth(), roomImageLabel.getHeight()));  // Show all rooms image
         });
 
         availableRoomsButton.addActionListener(e -> {
             roomDetailsArea.setText(resort.displayRooms());
-            roomImageLabel.setIcon(new ImageIcon("Source\\Buller.jpg"));  // Show available rooms image
+            roomImageLabel.setIcon(resizeImageIcon("Source\\Buller.jpg", roomImageLabel.getWidth(), roomImageLabel.getHeight()));  // Show available rooms image
         });
 
         panel.add(buttonPanel, BorderLayout.WEST);  // Add buttons on the left side
