@@ -54,22 +54,29 @@ public class MtBullerResort {
     // Method to save packages to a file
     public void savePackagesToFile(String filename) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
-            out.writeObject(packages); // Serialize the list of packages
+            out.writeObject(packages);  // Serialize and overwrite the list of packages in the file
             System.out.println("Packages have been saved to " + filename);
         } catch (IOException e) {
             System.out.println("Error saving packages: " + e.getMessage());
         }
     }
+    
 
     // Method to read packages from a file
     public void readPackagesFromFile(String filename) {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
-            packages = (ArrayList<TravelPackage>) in.readObject(); // Deserialize the list of packages
-            System.out.println("Packages have been loaded from " + filename);
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename + ".dat"))) {
+            packages = (ArrayList<TravelPackage>) in.readObject();  // Deserialize the list of packages
+            System.out.println("Packages have been loaded from " + filename + ".dat");
+    
+            // Display the packages after reading them
+            for (TravelPackage pkg : packages) {
+                System.out.println(pkg);
+            }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error reading packages: " + e.getMessage());
         }
     }
+    
 
     // Add a customer
     public void addCustomer(Customer customer) {
@@ -358,6 +365,7 @@ public class MtBullerResort {
             String liftPassStr = liftPassField.getText().trim();
             String skiingLevel = (String) skiingLevelComboBox.getSelectedItem();
     
+            // Input validation
             if (durationStr.isEmpty() || liftPassStr.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please fill out all fields before creating a package.");
                 return;
@@ -367,6 +375,18 @@ public class MtBullerResort {
                 int duration = Integer.parseInt(durationStr);
                 int liftPassDays = Integer.parseInt(liftPassStr);
     
+                // Ensure duration and lift pass are less than or equal to 30 days
+                if (duration > 30) {
+                    JOptionPane.showMessageDialog(null, "Duration cannot be more than 30 days.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;  // Stop execution
+                }
+    
+                if (liftPassDays > 30) {
+                    JOptionPane.showMessageDialog(null, "Lift Pass cannot be more than 30 days.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;  // Stop execution
+                }
+    
+                // Create the package if validation is successful
                 TravelPackage newPackage = createPackage(selectedCustomerId, startDate, duration, skiingLevel);
     
                 if (newPackage != null) {
@@ -380,6 +400,7 @@ public class MtBullerResort {
             }
         }
     }
+    
     
     
     
@@ -535,13 +556,20 @@ public class MtBullerResort {
         }
         return packageList.toString();
     }
-
-
+    
+        // Method to remove a package by customer ID and update the file
+        public String removePackage(String customerId) {
+            TravelPackage packageToRemove = findPackageByCustomerId(customerId);
+            if (packageToRemove != null) {
+                packages.remove(packageToRemove);  // Remove the package from memory
+                savePackagesToFile("packages.dat");  // Update the file after removal
+                return "Package for Customer ID: " + customerId + " has been removed and the file has been updated.";
+            } else {
+                return "No package found for Customer ID: " + customerId;
+            }
+        }
     
     
-
-    
-
     public Object getAvailableRooms() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAvailableRooms'");

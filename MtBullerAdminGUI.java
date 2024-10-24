@@ -1,15 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MtBullerAdminGUI extends JFrame {
 
     private MtBullerResort resort;
     private JLabel roomImageLabel;
+    private JTextArea packageDetailsArea; // Declare JTextArea for package details
 
     public MtBullerAdminGUI() {
         resort = new MtBullerResort(); // Initialize the resort logic
 
-        resort = new MtBullerResort(); // Initialize the resort logic
         // Adding initial customers (example)
         resort.addCustomer(new Customer("C1", "Alice", "0435551234", "beginner", "101"));
         resort.addCustomer(new Customer("C2", "Bob", "0425555678", "intermediate", "202"));
@@ -130,20 +132,22 @@ public class MtBullerAdminGUI extends JFrame {
 
         // Panel to hold buttons and labels (on the left side)
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(5, 1, 10, 10));  // Adjust for 5 rows now
 
         JButton createPackageButton = createButton("Create Package");
         JButton listPackagesButton = createButton("List Packages");
         JButton savePackageDetailButton = createButton("Save Package Details");
         JButton readPackageDetailButton = createButton("Read Package Details");
+        JButton removePackageButton = createButton("Remove Package");  // New button for removing packages
 
         buttonPanel.add(createPackageButton);
         buttonPanel.add(listPackagesButton);
         buttonPanel.add(savePackageDetailButton);
         buttonPanel.add(readPackageDetailButton);
+        buttonPanel.add(removePackageButton);  // Add the new button here
 
         // Text area to display package details (on the right side)
-        JTextArea packageDetailsArea = new JTextArea();
+        packageDetailsArea = new JTextArea();
         packageDetailsArea.setFont(new Font("Arial", Font.PLAIN, 16));
         packageDetailsArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(packageDetailsArea);
@@ -152,29 +156,58 @@ public class MtBullerAdminGUI extends JFrame {
         createPackageButton.addActionListener(e -> resort.createPackageProcess());  // Connect to createPackageProcess in MtBullerResort
 
         listPackagesButton.addActionListener(e -> {
-            System.out.println("List Packages Button Clicked");
             String packagesList = resort.listPackages();
-            System.out.println("Packages List: " + packagesList);
             packageDetailsArea.setText(packagesList);  // Set the list of packages in the text area
         });
-        
+
         savePackageDetailButton.addActionListener(e -> {
-            String filename = "packages.ser"; // File to save the packages
+            String filename = "packages.dat"; // File to save the packages
             resort.savePackagesToFile(filename); // Call the method to save
             packageDetailsArea.setText("Package details saved successfully to " + filename);
         });
-        
-        // Add functionality to read package details from a file
+
         readPackageDetailButton.addActionListener(e -> {
-            String filename = "packages.ser"; // File to read the packages
+            String filename = "packages.dat"; // File to read the packages
             resort.readPackagesFromFile(filename); // Call the method to read
             packageDetailsArea.setText(resort.listPackages()); // Display the read packages
         });
-        
+
+        // Listener for removing packages with animation
+        removePackageButton.addActionListener(e -> {
+            String customerId = JOptionPane.showInputDialog(null, "Enter Customer ID to remove package:");
+            if (customerId != null && !customerId.trim().isEmpty()) {
+                startFadeOutAnimation(customerId);  // Start the fade-out animation
+            } else {
+                packageDetailsArea.setText("Customer ID cannot be empty.");
+            }
+        });
+
         panel.add(buttonPanel, BorderLayout.WEST);  // Add buttons on the left side
         panel.add(scrollPane, BorderLayout.CENTER);  // Add text area on the right side
 
         return panel;
+    }
+
+    // Animation method for fade-out effect
+    private void startFadeOutAnimation(String customerId) {
+        Timer timer = new Timer(100, new ActionListener() {
+            float opacity = 1.0f;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                opacity -= 0.1f;
+                if (opacity <= 0) {
+                    ((Timer) e.getSource()).stop();  // Stop the timer
+                    packageDetailsArea.setText(resort.removePackage(customerId));  // Remove the package after fade-out
+                    packageDetailsArea.setForeground(Color.BLACK);  // Reset color after fade-out
+                } else {
+                    // Change text color to mimic fade-out effect
+                    Color fadedColor = new Color(0, 0, 0, opacity);
+                    packageDetailsArea.setForeground(fadedColor);
+                }
+            }
+        });
+        timer.start();  // Start the animation
     }
 
     // Create a custom JButton with consistent styling
